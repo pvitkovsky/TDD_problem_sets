@@ -46,11 +46,11 @@ public class TurtleGUI extends JFrame {
         PEN_COLORS.put(PenColor.MAGENTA, Color.MAGENTA);
     }
 
-    private static final double LENGTH_OF_A_TURN = 20;
-    private static final long MILLIS_PER_DRAWING = 5000;
+    private static final double LENGTH_OF_A_TURN = 200;
+    private static final long MILLIS_PER_DRAWING = 50000;
     private static final double ROUGH_FPS = 60;
 
-    private static final long MILLIS_PER_FRAME = (long) (1000.0 / ROUGH_FPS);
+    private static final long MILLIS_PER_FRAME = (long) (20000.0 / ROUGH_FPS);
 
     private final List<Action> actionList;
 

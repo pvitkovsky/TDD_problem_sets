@@ -5,6 +5,8 @@ package turtle;
 
 import java.util.List;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.LinkedList;
 
 public class TurtleSoup {
 
@@ -31,7 +33,7 @@ public class TurtleSoup {
      * @return angle in degrees, where 0 <= angle < 360
      */
     public static double calculateRegularPolygonAngle(int sides) {
-        throw new RuntimeException("implement me!");
+        return 180.0 - 180.0 * (sides-2) / sides;
     }
 
     /**
@@ -45,7 +47,7 @@ public class TurtleSoup {
      * @return the integer number of sides
      */
     public static int calculatePolygonSidesFromAngle(double angle) {
-        throw new RuntimeException("implement me!");
+        return (int) Math.round( 360.0 / (180.0 - angle));
     }
 
     /**
@@ -58,7 +60,11 @@ public class TurtleSoup {
      * @param sideLength length of each side
      */
     public static void drawRegularPolygon(Turtle turtle, int sides, int sideLength) {
-        throw new RuntimeException("implement me!");
+    	
+    	for(int i=0; i<sides; i++) {
+        	turtle.forward(sideLength);
+        	turtle.turn(calculateRegularPolygonAngle(sides));
+        }
     }
 
     /**
@@ -82,10 +88,16 @@ public class TurtleSoup {
      */
     public static double calculateHeadingToPoint(double currentHeading, int currentX, int currentY,
                                                  int targetX, int targetY) {
-        throw new RuntimeException("implement me!");
+        return 180 / Math.PI * (getAngle(currentX, currentY, targetX, targetY) - currentHeading); 
     }
 
-    /**
+    private static double getAngle(int currentX, int currentY, int targetX, int targetY) {
+		final int deltaX = targetX - currentX;
+		final int deltaY = targetY - currentY;
+		return Math.atan2(deltaY, deltaX);
+	}
+
+	/**
      * Given a sequence of points, calculate the heading adjustments needed to get from each point
      * to the next.
      * 
@@ -100,7 +112,24 @@ public class TurtleSoup {
      *         otherwise of size (# of points) - 1
      */
     public static List<Double> calculateHeadings(List<Integer> xCoords, List<Integer> yCoords) {
-        throw new RuntimeException("implement me!");
+        assert xCoords.size() == yCoords.size();
+    	List<Double> lstTurns = new LinkedList<Double>();
+    	double lastFacing = 0; 
+    	double nextFacing = 0;
+    	double relativeTurn = 0;
+    	for(int i = 1; i < xCoords.size(); i++) {
+    		nextFacing = calculateHeadingToPoint(
+    				0,   				
+    				xCoords.get(i-1),
+    				yCoords.get(i-1),
+    				xCoords.get(i),
+    				yCoords.get(i)
+    				);
+    		relativeTurn = nextFacing - lastFacing;
+    		lstTurns.add(relativeTurn);
+    		lastFacing = nextFacing;
+    	}
+    	return lstTurns;
     }
 
     /**
@@ -112,10 +141,46 @@ public class TurtleSoup {
      * @param turtle the turtle context
      */
     public static void drawPersonalArt(Turtle turtle) {
-        throw new RuntimeException("implement me!");
+    	List<Integer> xCoords = new ArrayList<Integer>();
+    	List<Integer> yCoords = new ArrayList<Integer>();
+    	for (int i = 1; i < 1800; i++) {
+    	   int j = (i%8==0?1:-1);
+    	   int k = (i%30==0?2:-2);
+    	   int m = (i%60==0?1:-2);
+    	   	xCoords = Arrays.asList(1*j*k*m, (i%100==0?-5:0));
+    	   	yCoords = Arrays.asList((i%100==0?5:0), 1*j*k*m);
+        	
+    		
+    		turtleCustomFigure(turtle, xCoords, yCoords);
+    	}
+    	
     }
 
-    /**
+	private static void turtleCustomFigure(Turtle turtle, List<Integer> xCoords, List<Integer> yCoords) {
+		assert xCoords.size() == yCoords.size();
+    	int length = 0;
+    	List<Double> headings = calculateHeadings(xCoords, yCoords);
+    	System.out.println(headings.toString());
+    	int i = 1;
+    	for (Double turn : headings) {
+    		length = calculateLength(
+    				yCoords.get(i-1),
+    				yCoords.get(i),
+    				xCoords.get(i-1),
+    				xCoords.get(i)
+    				);
+    		turtle.turn(turn);
+    		turtle.forward(length * 10);
+    		i++;
+    	}
+	}
+
+    private static int calculateLength(Integer yPrev,Integer yNext, Integer xPrev, Integer xNext) {
+		double hipotenuse = Math.sqrt((yNext - yPrev)*(yNext - yPrev) + (xNext - xPrev)*(xNext - xPrev));
+    	return (int) Math.round(hipotenuse);
+	}
+
+	/**
      * Main method.
      * 
      * This is the method that runs when you run "java TurtleSoup".
@@ -125,10 +190,12 @@ public class TurtleSoup {
     public static void main(String args[]) {
         DrawableTurtle turtle = new DrawableTurtle();
 
-        drawSquare(turtle, 40);
-
+        drawPersonalArt(turtle);
+        //drawSquare(turtle, 40);
+       // drawRegularPolygon(turtle, 3, 25);
         // draw the window
         turtle.draw();
+        
     }
 
 }
