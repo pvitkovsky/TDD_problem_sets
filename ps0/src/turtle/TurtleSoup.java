@@ -131,7 +131,19 @@ public class TurtleSoup {
     	}
     	return lstTurns;
     }
-
+    /**
+     * Given two points, calculates length between them
+     * @param yPrev
+     * @param yNext
+     * @param xPrev
+     * @param xNext
+     * @return
+     */
+    private static int calculateLength(Integer yPrev,Integer yNext, Integer xPrev, Integer xNext) {
+		double hipotenuse = Math.sqrt((yNext - yPrev)*(yNext - yPrev) + (xNext - xPrev)*(xNext - xPrev));
+    	return (int) Math.round(hipotenuse);
+	}
+    
     /**
      * Draw your personal, custom art.
      * 
@@ -175,10 +187,16 @@ public class TurtleSoup {
     	}
 	}
 
-    private static int calculateLength(Integer yPrev,Integer yNext, Integer xPrev, Integer xNext) {
-		double hipotenuse = Math.sqrt((yNext - yPrev)*(yNext - yPrev) + (xNext - xPrev)*(xNext - xPrev));
-    	return (int) Math.round(hipotenuse);
-	}
+    
+    
+    public static void drawArtII(Turtle turtle, double angle, int inc, int side, int times) {
+    	if (times > 0) {
+    		turtle.forward(side);
+    		turtle.turn(angle);
+    		drawArtII(turtle, angle, inc, side+inc, times-1);
+    	}
+    	
+    }
 
 	/**
      * Main method.
@@ -189,11 +207,9 @@ public class TurtleSoup {
      */
     public static void main(String args[]) {
         DrawableTurtle turtle = new DrawableTurtle();
-
-        drawPersonalArt(turtle);
-        //drawSquare(turtle, 40);
-       // drawRegularPolygon(turtle, 3, 25);
-        // draw the window
+        
+        drawArtII(turtle, 95., 1, 50, 225);
+        //drawPersonalArt(turtle);
         turtle.draw();
         
     }
