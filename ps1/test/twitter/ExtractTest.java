@@ -14,20 +14,35 @@ import org.junit.Test;
 public class ExtractTest {
 
 	/*
-	 * Testing strategy
+	 * Testing strategy for getTimespan:
 	 *
 	 * Partition the inputs as follows:
 	 * tweets: 0, 1, 2, > 2;
-	 * time in tweets: equal, later first, earlier first 
+	 * time in tweets: equal, later first, earlier first, unordered 
+	 */
+	
+	/*
+	 * Testing strategy for getMentionedUsers:
+	 *
+	 * Partition the inputs as follows:
+	 * mentions: 0, 1, 2;
+	 * duplicate entries: yes, no
 	 */
 	private static final Instant d1 = Instant.parse("2016-02-17T10:00:00Z");
-	private static final Instant d2 = Instant.parse("2016-02-17T11:00:00Z");
+	private static final Instant d2 = Instant.parse("2016-02-17T10:30:00Z");
+	private static final Instant d3 = Instant.parse("2016-02-17T11:00:00Z");
 
-	private static final Tweet tweet1 = new Tweet(1, "alyssa", "is it reasonable to talk about rivest so much?", d1);
-	private static final Tweet tweet2 = new Tweet(2, "bbitdiddle", "rivest talk in 30 minutes #hype", d2);
+	private static final String mentionOne = "@alyssa_1337";
+	private static final String mentionTwo = "@b-bit_diddle";
+	private static final Tweet tweetEarly_noMentions = new Tweet(1, "alyssa", "is it reasonable to talk about rivest so much?", d1);
+	private static final Tweet tweetLate_noMentions = new Tweet(2, "bbitdiddle", "rivest talk in 30 minutes #hype", d3);
+	private static final Tweet tweetMid_oneMention = new Tweet(3, "bbitdiddle", mentionOne+" #TDD rules", d2);
+	private static final Tweet tweetMid_twoMentions = new Tweet(4, "bbitdiddle", mentionOne+" is way above "+mentionTwo+" as hacker", d2);
 
 	public static void main(String[] args){
-		//		System.out.println(Extract.getTimespan(Arrays.asList()));
+//		Set<String> mentionedUsers = Extract.getMentionedUsers(Arrays.asList(tweetMid_twoMentions, tweetMid_twoMentions));
+//		System.out.println(mentionedUsers.toString());
+//		//		System.out.println(Extract.getTimespan(Arrays.asList()));
 		//		System.out.println(Extract.getTimespan(Arrays.asList(tweet1)));
 		//		System.out.println(Extract.getTimespan(Arrays.asList(tweet1, tweet2)));
 	}
@@ -40,15 +55,15 @@ public class ExtractTest {
 	// covers tweets = 0,
 	//  earlier first;
 	@Test
-	public void testZero() {
+	public void testTimeZero() {
 		Timespan timespan = Extract.getTimespan(Arrays.asList());
 		// undefined behaviour. should we test only contracted inputs?
 	}
 
 	// covers tweets = 1,
 	@Test
-	public void testOne() {
-		Timespan timespan = Extract.getTimespan(Arrays.asList(tweet1));
+	public void testTimeOne() {
+		Timespan timespan = Extract.getTimespan(Arrays.asList(tweetEarly_noMentions));
 		assertEquals("expected start", d1, timespan.getStart());
 		assertEquals("expected end", d1, timespan.getEnd());
 	}
@@ -56,36 +71,80 @@ public class ExtractTest {
 	// covers tweets = 2,
 	//  earlier first;
 	@Test
-	public void testTwoOrdered() {
-		Timespan timespan = Extract.getTimespan(Arrays.asList(tweet1, tweet2));
+	public void testTimeTwoOrdered() {
+		Timespan timespan = Extract.getTimespan(Arrays.asList(tweetEarly_noMentions, tweetLate_noMentions));
 		assertEquals("expected start", d1, timespan.getStart());
-		assertEquals("expected end", d2, timespan.getEnd());
+		assertEquals("expected end", d3, timespan.getEnd());
 	}
 
 	// covers tweets = 2,
 	//  later first;
 	@Test
-	public void testTwoUnOrdered() {
-		Timespan timespan = Extract.getTimespan(Arrays.asList(tweet2, tweet1));
+	public void testTimeTwoUnOrdered() {
+		Timespan timespan = Extract.getTimespan(Arrays.asList(tweetLate_noMentions, tweetEarly_noMentions));
 		assertEquals("expected start", d1, timespan.getStart());
-		assertEquals("expected end", d2, timespan.getEnd());
+		assertEquals("expected end", d3, timespan.getEnd());
 	}
 
 	// covers tweets = 2,
 	//  equal time;
 	@Test
-	public void testTwoEqual() {
-		Timespan timespan = Extract.getTimespan(Arrays.asList(tweet1, tweet1));
+	public void testTimeTwoEqual() {
+		Timespan timespan = Extract.getTimespan(Arrays.asList(tweetEarly_noMentions, tweetEarly_noMentions));
 		assertEquals("expected start", d1, timespan.getStart());
 		assertEquals("expected end", d1, timespan.getEnd());
 	}
+	
+	// covers tweets = > 2,
+	//  unordered time;
+	@Test
+	public void testTimeMulti() {
+		Timespan timespan = Extract.getTimespan(Arrays.asList(tweetEarly_noMentions, tweetLate_noMentions, tweetLate_noMentions, tweetEarly_noMentions, tweetMid_twoMentions));
+		assertEquals("expected start", d1, timespan.getStart());
+		assertEquals("expected end", d3, timespan.getEnd());
+	}
 
+	//covers mentions: 0;
+	//duplicates: no
 	@Test
 	public void testGetMentionedUsersNoMention() {
-		Set<String> mentionedUsers = Extract.getMentionedUsers(Arrays.asList(tweet1));
-
+		Set<String> mentionedUsers = Extract.getMentionedUsers(Arrays.asList(tweetEarly_noMentions));
 		assertTrue("expected empty set", mentionedUsers.isEmpty());
 	}
+	
+	//covers mentions: 1;
+	//duplicates: no
+	@Test
+	public void testGetMentionedUsersOneMention() {
+		Set<String> mentionedUsers = Extract.getMentionedUsers(Arrays.asList(tweetMid_oneMention));
+		assertTrue("expected mention one", mentionedUsers.contains(mentionOne) && mentionedUsers.size() == 1);
+	}
+
+	//covers mentions: 1;
+	//duplicates: yes
+	@Test
+	public void testGetMentionedUsersOneMentionDouble() {
+		Set<String> mentionedUsers = Extract.getMentionedUsers(Arrays.asList(tweetMid_oneMention, tweetMid_oneMention));
+		assertTrue("expected mention one", mentionedUsers.contains(mentionOne) && mentionedUsers.size() == 1);
+	}
+	
+	//covers mentions: 2;
+	//duplicates: no
+	@Test
+	public void testGetMentionedUserTwoMentions() {
+		Set<String> mentionedUsers = Extract.getMentionedUsers(Arrays.asList(tweetMid_twoMentions));
+		assertTrue("expected mention one", mentionedUsers.contains(mentionOne) && mentionedUsers.contains(mentionTwo) && mentionedUsers.size() == 2);
+	}
+
+	//covers mentions: 2;
+	//duplicates: yes
+	@Test
+	public void testGetMentionedUsersTwoMentionsDouble() {
+		Set<String> mentionedUsers = Extract.getMentionedUsers(Arrays.asList(tweetMid_twoMentions, tweetMid_twoMentions));
+		assertTrue("expected empty set", mentionedUsers.contains(mentionOne) && mentionedUsers.contains(mentionTwo) && mentionedUsers.size() == 2);
+	}
+
+
 
 	/*
 	 * Warning: all the tests you write here must be runnable against any

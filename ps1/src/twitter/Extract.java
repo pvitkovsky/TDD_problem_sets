@@ -3,9 +3,14 @@
  */
 package twitter;
 
+import java.awt.GradientPaint;
+import java.awt.datatransfer.StringSelection;
 import java.time.Instant;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Extract consists of methods that extract information from a list of tweets.
@@ -25,6 +30,7 @@ public class Extract {
      *         every tweet in the list.
      */
     public static Timespan getTimespan(List<Tweet> tweets) {
+    	if (tweets.size() == 0) return null;
     	Instant first = tweets.get(0).getTimestamp();
     	Instant last = tweets.get(0).getTimestamp();
     	for (Tweet tw : tweets){
@@ -49,8 +55,19 @@ public class Extract {
      *         Twitter usernames are case-insensitive, and the returned set may
      *         include a username at most once.
      */
+    
     public static Set<String> getMentionedUsers(List<Tweet> tweets) {
-        throw new RuntimeException("not implemented");
+
+		Pattern pattern = Pattern.compile("(@[A-Z|a-z|0-9|_|-]+)");
+    	Set<String> res = new HashSet<String>();
+    	for(Tweet tweet : tweets) {
+    		String text = tweet.getText();
+    		Matcher matcher = pattern.matcher(text);
+    		while (matcher.find()) {
+    			res.add(matcher.group());
+    		}
+    	}
+        return res;
     }
 
 }
