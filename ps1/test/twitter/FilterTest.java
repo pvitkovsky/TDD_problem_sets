@@ -14,9 +14,30 @@ import org.junit.Test;
 public class FilterTest {
 
     /*
-     * TODO: your testing strategies for these methods should go here.
-     * See the ic03-testing exercise for examples of what a testing strategy comment looks like.
-     * Make sure you have partitions.
+     * Strategy:
+     * Partition our methods as following:
+     * Filter.writtenBy:
+     *   By valid authors: 0, 1, >1;
+     *   By size of tweet list: 0, 1, >1; 
+     *   Repetition of tweets: yes, no
+     *   Repetition of authors: yes, no  
+     *   Difference between valid and invalid author:
+     *     general, letter case
+     *  
+     * Filter.inTimespan:
+     *   By timespan size: 0, >0
+     *   By size of tweet list: 0, 1, >1;
+     *   Repetition of tweets: yes, no;
+     *
+     * Filter.containing:
+     *   By size of tweet list: 0, 1, >1;
+     *   By size of word list: 0, 1, >1;
+     *   Repetition of tweets: yes, no;
+     *   Repetition of words: yes, no;
+     *   Case: lower, mixed;
+     *   
+     *   Exhaustive Cartesian coverage of partitions;
+     *   Checking that the order of tweets is unchanged;
      */
     
     private static final Instant d1 = Instant.parse("2016-02-17T10:00:00Z");
