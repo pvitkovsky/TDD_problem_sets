@@ -38,6 +38,7 @@ public class FilterTest {
      *   
      *   Exhaustive Cartesian coverage of partitions;
      *   Checking that the order of tweets is unchanged;
+     *   Ensuring the implicit precondition (not null) is handled in a fail-fast manner;
      */
     
     private static final Instant d1 = Instant.parse("2016-02-17T10:00:00Z");
