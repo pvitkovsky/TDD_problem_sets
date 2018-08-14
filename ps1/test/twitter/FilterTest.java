@@ -40,7 +40,7 @@ public class FilterTest {
 	private static final String userNameTwo = "bbitdiddle";
 
 	private static final List<String> WORDS1 = Arrays.asList("rivest");
-	private static final List<String> WORDS3CASEINSEN = Arrays.asList("hacker, minutes, much, hAcKEr");
+	private static final List<String> WORDS3CASEINSEN = Arrays.asList("hacker", "minutes", "much", "hAcKEr");
 
 	private static final Tweet tweetEarly_U1 = new Tweet(1, userNameOne,
 			"is it reasonable to talk about rivest so much?", d1);
@@ -50,7 +50,7 @@ public class FilterTest {
 
 	private static final List<Tweet> LSTWEETU1 = Arrays.asList(tweetEarly_U1);
 	private static final List<Tweet> LSTWEETU2 = Arrays.asList(tweetEarly_U2);
-	private static final List<Tweet> LSTWEETU1U2NOSPAN = Arrays.asList(tweetEarly_U1, tweetLate_U2);
+	private static final List<Tweet> LSTWEETU1U2NOSPAN = Arrays.asList(tweetEarly_U1, tweetEarly_U2);
 	private static final List<Tweet> LSTWEETU1U2SPAN = Arrays.asList(tweetMid_U1, tweetLate_U2);
 	private static final List<Tweet> LSTWEETSIX_3U1_3U2 = Arrays.asList(tweetEarly_U1, tweetEarly_U2, tweetLate_U2,
 			tweetMid_U1, tweetEarly_U1, tweetLate_U2);
