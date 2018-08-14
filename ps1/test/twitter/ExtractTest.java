@@ -31,16 +31,16 @@ public class ExtractTest {
 	private static final Instant d2 = Instant.parse("2016-02-17T10:30:00Z");
 	private static final Instant d3 = Instant.parse("2016-02-17T11:00:00Z");
 
-	private static final String mentionOne = "@alyssa_1337";
-	private static final String mentionTwo = "@b-bit_diddle";
+	private static final String mentionOne = "alyssa_1337";
+	private static final String mentionTwo = "b-bit_diddle";
 
 	private static final Tweet tweetNull = null;
 	private static final Tweet tweetEarly_noMentions = new Tweet(1, "alyssa",
 			"is it reasonable to talk about rivest so much?", d1);
 	private static final Tweet tweetLate_noMentions = new Tweet(2, "bbitdiddle", "rivest talk in 30 minutes #hype", d3);
-	private static final Tweet tweetMid_oneMention = new Tweet(3, "bbitdiddle", mentionOne + " #TDD rules", d2);
+	private static final Tweet tweetMid_oneMention = new Tweet(3, "bbitdiddle", "@"+mentionOne + " #TDD rules", d2);
 	private static final Tweet tweetMid_twoMentions = new Tweet(4, "bbitdiddle",
-			mentionOne + " is way above " + mentionTwo + " as hacker", d2);
+			"@"+mentionOne + " is way above "+"@"+mentionTwo + " as hacker", d2);
 
 	public static void main(String[] args) {
 		// Set<String> mentionedUsers =

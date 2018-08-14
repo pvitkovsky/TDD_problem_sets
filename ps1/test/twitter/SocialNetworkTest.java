@@ -45,9 +45,9 @@ public class SocialNetworkTest {
 	private static final String userNameTwo = "bbitdiddle";
 	private static final String userNameThree = "evaluator";
 	
-	private static final Tweet tweet1E_BA = new Tweet(1, userNameThree, "@"+userNameOne+"talks, @"+userNameTwo+"agrees", d1);
-	private static final Tweet tweet2B_AA = new Tweet(2, userNameTwo, "@"+userNameOne+"smartest rivest talker. @"+userNameOne+", I agree", d1);
-	private static final Tweet tweet3B_A = new Tweet(3, userNameTwo, "@"+userNameOne+"#TDD rules", d1);
+	private static final Tweet tweet1E_BA = new Tweet(1, userNameThree, "@"+userNameOne+" talks, @"+userNameTwo+" agrees", d1);
+	private static final Tweet tweet2B_AA = new Tweet(2, userNameTwo, "@"+userNameOne+" smartest rivest talker. @"+userNameOne+", I agree", d1);
+	private static final Tweet tweet3B_A = new Tweet(3, userNameTwo, "@"+userNameOne+" #TDD rules", d1);
 	private static final Tweet tweet4A = new Tweet(4, userNameOne, "Hack and test #hype", d1);
 
 	private static final List<Tweet> LSTWEETU1 = Arrays.asList(tweet1E_BA, tweet2B_AA, tweet3B_A, tweet4A);
@@ -64,9 +64,9 @@ public class SocialNetworkTest {
     }
     
     //fail fast: arg0 is null
-    @Test
+    @Test (expected=IllegalArgumentException.class)
     public void testGuessArg0Null() {
-    	assertEquals(SocialNetwork.guessFollowsGraph(null), null);
+    	SocialNetwork.guessFollowsGraph(null);
     }
     
     //fail fast: arg1 is empty
@@ -92,9 +92,6 @@ public class SocialNetworkTest {
     	assertEquals(SocialNetwork.guessFollowsGraph(LSTWEETU1), EXPMAPU1);
     }
    
-    
-   
-    
     //fail fast: arg0 is null
     @Test(expected = IllegalArgumentException.class)
     public void testInfArg0Null() {

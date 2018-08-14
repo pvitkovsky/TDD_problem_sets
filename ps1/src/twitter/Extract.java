@@ -64,7 +64,7 @@ public class Extract {
     		String text = tweet.getText();
     		Matcher matcher = pattern.matcher(text);
     		while (matcher.find()) {
-    			res.add(matcher.group());
+    			res.add(matcher.group().replaceAll("@", ""));
     		}
     	}
         return res;
