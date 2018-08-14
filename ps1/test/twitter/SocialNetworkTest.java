@@ -96,9 +96,9 @@ public class SocialNetworkTest {
    
     
     //fail fast: arg0 is null
-    @Test
+    @Test(expected = IllegalArgumentException.class)
     public void testInfArg0Null() {
-    	assertEquals(SocialNetwork.influencers(null), null);
+    	SocialNetwork.influencers(null);
     }
     
     //fail fast: arg0 is empty

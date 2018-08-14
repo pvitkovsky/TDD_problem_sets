@@ -86,7 +86,7 @@ public class FilterTest {
 	@Test
 	public void writtenByOneTweetAuthorNotFound() {
 		List<Tweet> filtered = Filter.writtenBy(LSTWEETU1, userNameOne.toUpperCase());
-		assertEquals(filtered.size(), 0);
+		  assertTrue("expected empty list", filtered.isEmpty());
 	}
 
 	// tweet list size: 6, author present: 3 yes, 3 no, tweet repetition: yes;
@@ -119,9 +119,9 @@ public class FilterTest {
 	}
 
 	// fail-fast: tweet list: 0
-	@Test(expected = IllegalArgumentException.class)
+	@Test
 	public void timeSpanZeroEmptyTweets() {
-		assertEquals(Filter.inTimespan(Arrays.asList(), TSEarlyInstant), null);
+		assertTrue("Expected empty list", Filter.inTimespan(Arrays.asList(), TSEarlyInstant).isEmpty());
 	}
 
 	// timespan size: 0, tweet found: yes / no, tweet list: 2, tweet repetition: no
@@ -165,9 +165,9 @@ public class FilterTest {
 	}
 
 	// fail-fast: tweet list size: 0
-	@Test(expected = IllegalArgumentException.class)
+	@Test
 	public void containingNoTweets() {
-		assertEquals(Filter.containing(Arrays.asList(), WORDS1), Arrays.asList());
+		assertTrue("Expected empty list", Filter.containing(Arrays.asList(), WORDS1).isEmpty());
 	}
 
 	// tweet list size: 1, word count: 0,

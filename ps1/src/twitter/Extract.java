@@ -28,7 +28,7 @@ public class Extract {
      *         every tweet in the list.
      */
     public static Timespan getTimespan(List<Tweet> tweets) {
-    	if (!TweetsSentinel.areOK(tweets)) throw new IllegalArgumentException();
+    	if (!TweetsSentinel.areOK(tweets) || tweets.isEmpty()) throw new IllegalArgumentException();
     	Instant first = tweets.get(0).getTimestamp();
     	Instant last = tweets.get(0).getTimestamp();
     	for (Tweet tw : tweets){

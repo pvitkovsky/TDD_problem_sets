@@ -10,12 +10,13 @@ public class TweetsSentinel {
 	 * @return true if tweets are not null and not empty; and the first
 	 */
 	public static boolean areOK(List<Tweet> tweets) {
-		if (tweets == null || tweets.size() == 0)
+		if (tweets == null)
 			throw new IllegalArgumentException();
+		if (tweets.size() == 0) return true; // empty lists are allowed;
+		boolean res = false;
 		for (Tweet tw : tweets) {
-			if (tw != null)
-				return true;
+				res = (tw != null) || res;
 		}
-		return false;
+		return res;
 	}
 }
