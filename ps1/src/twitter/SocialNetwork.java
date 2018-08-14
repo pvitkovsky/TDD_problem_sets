@@ -9,10 +9,8 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Set;
 
-import util.MultiMap;
 import util.MultiMapFillerByTweet;
 
 /**
@@ -50,6 +48,8 @@ public class SocialNetwork {
 	 *            or @-mentions in the list of tweets.
 	 */
 	public static Map<String, Set<String>> guessFollowsGraph(List<Tweet> tweets) {
+		if(!TweetsSentinel.areOK(tweets)) throw new IllegalArgumentException();
+		
 		Map<String, Set<String>> res = new HashMap<String, Set<String>>();
 		Set<String> allUsers = getAllUsers(tweets);
 		for (String nodeUser : allUsers) {
@@ -60,7 +60,6 @@ public class SocialNetwork {
 				}
 			}
 		}
-		MultiMap.display(res);
 		return res;
 	}
 
@@ -90,7 +89,10 @@ public class SocialNetwork {
 	 *         descending order of follower count.
 	 */
 	public static List<String> influencers(Map<String, Set<String>> followsGraph) {
-		throw new RuntimeException("not implemented");
+		if(!TweetsSentinel.areOK(followsGraph)) throw new IllegalArgumentException();
+		ArrayList<String> res = new ArrayList<String>(followsGraph.keySet());
+		res.sort((p1, p2) -> p1.compareTo(p2));
+		return res;
 	}
 
 }
