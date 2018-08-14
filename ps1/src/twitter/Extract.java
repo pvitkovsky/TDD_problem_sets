@@ -3,8 +3,6 @@
  */
 package twitter;
 
-import java.awt.GradientPaint;
-import java.awt.datatransfer.StringSelection;
 import java.time.Instant;
 import java.util.HashSet;
 import java.util.List;
@@ -30,7 +28,7 @@ public class Extract {
      *         every tweet in the list.
      */
     public static Timespan getTimespan(List<Tweet> tweets) {
-    	if (tweets.size() == 0) return null;
+    	if (!TweetsSentinel.areOK(tweets)) throw new IllegalArgumentException();
     	Instant first = tweets.get(0).getTimestamp();
     	Instant last = tweets.get(0).getTimestamp();
     	for (Tweet tw : tweets){
@@ -39,6 +37,8 @@ public class Extract {
     	}
     	return new Timespan(first, last);
     }
+
+   
 
     /**
      * Get usernames mentioned in a list of tweets.
@@ -57,7 +57,7 @@ public class Extract {
      */
     
     public static Set<String> getMentionedUsers(List<Tweet> tweets) {
-
+    	if (!TweetsSentinel.areOK(tweets))throw new IllegalArgumentException();
 		Pattern pattern = Pattern.compile("(@[A-Z|a-z|0-9|_|-]+)");
     	Set<String> res = new HashSet<String>();
     	for(Tweet tweet : tweets) {

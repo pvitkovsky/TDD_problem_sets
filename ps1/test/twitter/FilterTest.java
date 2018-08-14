@@ -49,7 +49,6 @@ public class FilterTest {
 	private static final Tweet tweetLate_U2 = new Tweet(4, userNameTwo, "She is way above me as a hacker", d3);
 
 	private static final List<Tweet> LSTWEETU1 = Arrays.asList(tweetEarly_U1);
-	private static final List<Tweet> LSTWEETU2 = Arrays.asList(tweetEarly_U2);
 	private static final List<Tweet> LSTWEETU1U2NOSPAN = Arrays.asList(tweetEarly_U1, tweetEarly_U2);
 	private static final List<Tweet> LSTWEETU1U2SPAN = Arrays.asList(tweetMid_U1, tweetLate_U2);
 	private static final List<Tweet> LSTWEETSIX_3U1_3U2 = Arrays.asList(tweetEarly_U1, tweetEarly_U2, tweetLate_U2,
@@ -57,7 +56,6 @@ public class FilterTest {
 
 	private static final Timespan TSEarlyInstant = new Timespan(d1, d1);
 	private static final Timespan TSMidInstant = new Timespan(d2, d2);
-	private static final Timespan TSEarlyMid = new Timespan(d1, d2);
 	private static final Timespan TSMidLate = new Timespan(d2, d3);
 
 	@Test(expected = AssertionError.class)
@@ -66,13 +64,13 @@ public class FilterTest {
 	}
 
 	// fail-fast parameter 1 null
-	@Test
+	@Test(expected = IllegalArgumentException.class)
 	public void writtenByNoTweets() {
 		assertEquals(Filter.writtenBy(null, userNameOne), null);
 	}
 
 	// fail-fast parameter 2 null
-	@Test
+	@Test(expected = IllegalArgumentException.class)
 	public void writtenByNullAuthors() {
 		assertEquals(Filter.writtenBy(Arrays.asList(tweetEarly_U1), null), null);
 	}
@@ -88,7 +86,7 @@ public class FilterTest {
 	@Test
 	public void writtenByOneTweetAuthorNotFound() {
 		List<Tweet> filtered = Filter.writtenBy(LSTWEETU1, userNameOne.toUpperCase());
-		assertEquals(filtered, null);
+		assertEquals(filtered.size(), 0);
 	}
 
 	// tweet list size: 6, author present: 3 yes, 3 no, tweet repetition: yes;
@@ -109,19 +107,19 @@ public class FilterTest {
 	}
 
 	// fail-fast: parameter 1 is null
-	@Test
+	@Test(expected = IllegalArgumentException.class)
 	public void timeSpanNullTweets() {
 		assertEquals(Filter.inTimespan(null, TSEarlyInstant), null);
 	}
 
 	// fail-fast: parameter 2 is null
-	@Test
+	@Test(expected = IllegalArgumentException.class)
 	public void timeSpanNullTS() {
 		assertEquals(Filter.inTimespan(LSTWEETU1, null), null);
 	}
 
-	// timespan size: 0, tweet found: no, tweet list: 0
-	@Test
+	// fail-fast: tweet list: 0
+	@Test(expected = IllegalArgumentException.class)
 	public void timeSpanZeroEmptyTweets() {
 		assertEquals(Filter.inTimespan(Arrays.asList(), TSEarlyInstant), null);
 	}
@@ -155,19 +153,19 @@ public class FilterTest {
 	}
 
 	// fail-fast: parameter 1 is null
-	@Test
+	@Test(expected = IllegalArgumentException.class)
 	public void containingNullTweets() {
 		assertEquals(Filter.containing(null, WORDS1), null);
 	}
 
 	// fail-fast: parameter 2 is null
-	@Test
+	@Test(expected = IllegalArgumentException.class)
 	public void containingNullWords() {
 		assertEquals(Filter.containing(LSTWEETU1, null), null);
 	}
 
-	// tweet list size: 0
-	@Test
+	// fail-fast: tweet list size: 0
+	@Test(expected = IllegalArgumentException.class)
 	public void containingNoTweets() {
 		assertEquals(Filter.containing(Arrays.asList(), WORDS1), Arrays.asList());
 	}

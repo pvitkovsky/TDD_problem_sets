@@ -3,7 +3,6 @@
  */
 package twitter;
 
-import java.nio.charset.UnmappableCharacterException;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -31,7 +30,7 @@ public class Filter {
 	 *         same order as in the input list.
 	 */
 	public static List<Tweet> writtenBy(List<Tweet> tweets, String username) {
-		if (tweets == null || username == null)
+		if (!TweetsSentinel.areOK(tweets) || username == null)
 			throw new IllegalArgumentException();
 		HashSet<Tweet> res = new HashSet<>();
 		for (Tweet tweet : tweets) {
@@ -52,7 +51,7 @@ public class Filter {
 	 *         timespan, in the same order as in the input list.
 	 */
 	public static List<Tweet> inTimespan(List<Tweet> tweets, Timespan timespan) {
-		if (tweets == null || timespan == null)
+		if (!TweetsSentinel.areOK(tweets)|| timespan == null)
 			throw new IllegalArgumentException();
 		HashSet<Tweet> res = new HashSet<>();
 		for (Tweet tweet : tweets) {
@@ -84,7 +83,7 @@ public class Filter {
 	 *         same order as in the input list.
 	 */
 	public static List<Tweet> containing(List<Tweet> tweets, List<String> words) {
-		if (tweets == null || words == null)
+		if (!TweetsSentinel.areOK(tweets) || words == null)
 			throw new IllegalArgumentException();
 		HashSet<Tweet> res = new HashSet<>();
 		for (Tweet tweet : tweets) {
