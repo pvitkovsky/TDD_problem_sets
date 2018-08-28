@@ -20,7 +20,13 @@ import org.junit.Test;
 public abstract class GraphInstanceTest {
     
     // Testing strategy
-    //   TODO
+    //   Fail-fast on null arguments is tested with each graph method;
+	//   Partition our methods as following:
+	//   Add: Element e exists; not exists;
+	//   Remove: Element e from: empty; containing e; non-containing e;
+	//   Set: Illegal argument first/second/third; Legal arguments; 
+	//   Source: target illegal; target legal and has 0/1/n sources;
+    //   Target: source illegal; source legal and has 0/1/n targets;
     
     /**
      * Overridden by implementation-specific test classes.
@@ -41,6 +47,58 @@ public abstract class GraphInstanceTest {
                 Collections.emptySet(), emptyInstance().vertices());
     }
     
-    // TODO other tests for instance methods of Graph
+    @Test
+    public void testNullFailFast(){}
+    
+    @Test
+    public void testAddNew(){}
+    
+    @Test
+    public void testAddExisting(){}
+    
+    @Test
+    public void testRemoveFromEmpty(){}
+    
+    @Test
+    public void testRemoveFromContaining(){}
+    
+    @Test
+    public void testRemoveFromNotContaining(){}
+    
+    @Test
+    public void testSetIllegalSource(){}
+    
+    @Test
+    public void testSetIllegalDest(){}
+
+    @Test
+    public void testSetIllegalWeight(){}
+    
+    @Test
+    public void testSet(){}
+    
+    @Test
+    public void testSourceIllegalTarget(){}
+    
+    @Test
+    public void testSourceZero(){}
+
+    @Test
+    public void testSourceOne(){}
+    
+    @Test
+    public void testSourceN(){}
+    
+    @Test
+    public void testTargetIllegalSource(){}
+    
+    @Test
+    public void testTargetZero(){}
+
+    @Test
+    public void testTargetOne(){}
+    
+    @Test
+    public void testTargetN(){}
     
 }
