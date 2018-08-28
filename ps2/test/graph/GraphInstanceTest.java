@@ -10,23 +10,16 @@ import java.util.Set;
 
 import org.junit.Test;
 
-import com.util.randString.randString;
-
 /**
  * Tests for instance methods of Graph.
  * 
  * <p>PS2 instructions: you MUST NOT add constructors, fields, or non-@Test
  * methods to this class, or change the spec of {@link #emptyInstance()}.
  * Your tests MUST only obtain Graph instances by calling emptyInstance().
- * Your tests MUST NOT refer to specific concrete implementations.
+s * Your tests MUST NOT refer to specific concrete implementations.
  */
 public abstract class GraphInstanceTest {
-    
-	//Violating instructions for code reusability; 
-    private static final int BUFFERSIZE = 5;
-    private static final int BUFFERNAMELENGTH = 6;
-    private static final Set<String> EXTRASTRINGS = randString.randomSet(BUFFERSIZE, BUFFERNAMELENGTH);
-	
+       
 	// Testing strategy
     //   Fail-fast on null arguments is tested with each graph method;
 	//   Partition our methods as following:
@@ -60,10 +53,22 @@ public abstract class GraphInstanceTest {
     public void testNullFailFast(){}
     
     @Test
-    public void testAddNew(){
+    public void testAddNewOnEmpty(){
     	Graph<String> graph = emptyInstance();
     	assertEquals("Adding new vertex modifies the graph",
                 true, graph.add("Test"));
+    }
+    
+    @Test
+    public void testAddNew(){
+    	Graph<String> graph = emptyInstance();
+    	Set<String> extraStrings = VerticeSetGenerator.getExtraStrings();
+    	for(String str : extraStrings) {
+    		graph.add(str);
+    	}
+    	String newString = VerticeSetGenerator.getUniqueString();
+    	assertEquals("Adding new vertex modifies the graph",
+                true, graph.add(newString));
     }
     
     @Test
@@ -77,30 +82,32 @@ public abstract class GraphInstanceTest {
     @Test 
     public void testVerticesSize() {
     	Graph<String> graph = emptyInstance();
+    	Set<String> extraStrings = VerticeSetGenerator.getExtraStrings();
     	assertEquals("Zero size in emptyInstance",
                 0, graph.vertices().size());
-    	for(String str : EXTRASTRINGS) {
+    	for(String str : extraStrings) {
     		graph.add(str);
     	}
     	assertEquals("One size after adding one vertex",
-    			EXTRASTRINGS.size(), graph.vertices().size());
-    	graph.add(EXTRASTRINGS.iterator().next());
+    			extraStrings.size(), graph.vertices().size());
+    	graph.add(extraStrings.iterator().next());
     	assertEquals("Adding exising vertice doesn't change graph size",
-    			EXTRASTRINGS.size(), graph.vertices().size());
-    	for(String str : EXTRASTRINGS) {
+    			extraStrings.size(), graph.vertices().size());
+    	for(String str : extraStrings) {
     		graph.remove(str);
     	}
-    	assertEquals("Zero size after removing one vertex",
+    	assertEquals("Zero size after removing all vertices",
                 0, graph.vertices().size());
     }
 
     @Test 
     public void testVerticesContains() {
     	Graph<String> graph = emptyInstance();
-    	for(String str : EXTRASTRINGS) {
+    	Set<String> extraStrings = VerticeSetGenerator.getExtraStrings();
+    	for(String str : extraStrings) {
     		graph.add(str);
     	}
-    	String test = EXTRASTRINGS.iterator().next();
+    	String test = extraStrings.iterator().next();
     	assertEquals("Vertices contain what was added",
                 true, graph.vertices().contains(test));
     	graph.remove(test);

@@ -32,8 +32,4 @@ public class randString {
 		}
 		return res;
 	}
-
-	public static void main(String[] args) {
-		System.out.println(randomSet(5, 5));
-	}
 }
