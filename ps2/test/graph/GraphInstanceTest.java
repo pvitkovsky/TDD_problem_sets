@@ -62,11 +62,11 @@ public abstract class GraphInstanceTest {
     @Test
     public void testAddNew(){
     	Graph<String> graph = emptyInstance();
-    	Set<String> extraStrings = VerticeSetGenerator.getExtraStrings();
+    	Set<String> extraStrings = TestDataGenerator.getExtraStrings();
     	for(String str : extraStrings) {
     		graph.add(str);
     	}
-    	String newString = VerticeSetGenerator.getUniqueString();
+    	String newString = TestDataGenerator.getUniqueString();
     	assertEquals("Adding new vertex modifies the graph",
                 true, graph.add(newString));
     }
@@ -82,7 +82,7 @@ public abstract class GraphInstanceTest {
     @Test 
     public void testVerticesSize() {
     	Graph<String> graph = emptyInstance();
-    	Set<String> extraStrings = VerticeSetGenerator.getExtraStrings();
+    	Set<String> extraStrings = TestDataGenerator.getExtraStrings();
     	assertEquals("Zero size in emptyInstance",
                 0, graph.vertices().size());
     	for(String str : extraStrings) {
@@ -103,7 +103,7 @@ public abstract class GraphInstanceTest {
     @Test 
     public void testVerticesContains() {
     	Graph<String> graph = emptyInstance();
-    	Set<String> extraStrings = VerticeSetGenerator.getExtraStrings();
+    	Set<String> extraStrings = TestDataGenerator.getExtraStrings();
     	for(String str : extraStrings) {
     		graph.add(str);
     	}
@@ -139,16 +139,27 @@ public abstract class GraphInstanceTest {
     }
     
     @Test
-    public void testSetIllegalSource(){}
+    public void testSetIllegalSource(){
+    }
     
     @Test
-    public void testSetIllegalDest(){}
-
+    public void testSetNewDest(){
+    	Graph<String> graph = emptyInstance();
+    	graph.add("Alpha");
+    	graph.add("Beta");
+    	for (int i = 0; i <= 8; i++) {
+    		assertEquals("Graph.set returns previous weight",
+        			i, graph.set("Alpha", "Beta", i+1));	
+    	}
+    }
+   
     @Test
-    public void testSetIllegalWeight(){}
-    
-    @Test
-    public void testSet(){}
+    public void testSet(){
+    	Graph<String> graph = emptyInstance();
+    	graph.add("Alpha");
+    	assertEquals("New vertice added",
+    			2, graph.vertices().size()); 	
+    }
     
     @Test
     public void testSourceIllegalTarget(){}
