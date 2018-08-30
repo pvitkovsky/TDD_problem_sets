@@ -6,6 +6,8 @@ package graph;
 import static org.junit.Assert.*;
 
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
 
 import org.junit.Test;
@@ -162,13 +164,30 @@ public abstract class GraphInstanceTest {
     }
     
     @Test
-    public void testSourceIllegalTarget(){}
+    public void testSourceIllegalTarget(){
+    	
+    }
     
     @Test
-    public void testSourceZero(){}
+    public void testSourceZero(){
+    	Graph<String> graph = emptyInstance();
+    	graph.add("Alpha");
+    	assertEquals("Empty map",
+    			Collections.EMPTY_MAP, graph.sources("Alpha"));
+    }
 
     @Test
-    public void testSourceOne(){}
+    public void testSourceOne(){
+    	Map<String, Integer> resMap = new HashMap<>();
+    	String secondVertex = "Beta";
+		int weightFirstToSecond = 1;
+		resMap.put(secondVertex, weightFirstToSecond);
+    	Graph<String> graph = emptyInstance();
+    	graph.add("Alpha");
+    	graph.set("Alpha",  secondVertex, weightFirstToSecond);
+    	assertEquals("One new vertex",
+    			resMap, graph.sources("Alpha"));
+    }
     
     @Test
     public void testSourceN(){}
