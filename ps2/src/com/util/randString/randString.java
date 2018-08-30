@@ -25,11 +25,24 @@ public class randString {
 	 *            size of set to return
 	 * @return a set of random strings of size size
 	 */
-	public static Set<String> randomSet(int len, int size) {
+	public static Set<String> randomSet(int len, long size) {
 		Set<String> res = new HashSet<String>();
 		while (res.size() < size) {
 			res.add(randomString(len));
 		}
+		return res;
+	}
+
+	/**
+	 * Relatively to the set given, returns a unique random string.
+	 * @param set a set of strings that we can't repeat
+	 * @return a string that is not contained in the set
+	 */
+	public static String uniqueString(int len, final Set<String> set) {
+		String res;
+		do {
+			res = randomString(len);
+		} while (set.contains(res));
 		return res;
 	}
 }
