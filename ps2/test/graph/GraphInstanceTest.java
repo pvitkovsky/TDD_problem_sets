@@ -47,7 +47,6 @@ public abstract class GraphInstanceTest {
 
 	@Test
 	public void testInitialVerticesEmpty() {
-		// TODO you may use, change, or remove this test
 		assertEquals("expected new graph to have no vertices", Collections.emptySet(), emptyInstance().vertices());
 	}
 
@@ -130,10 +129,6 @@ public abstract class GraphInstanceTest {
 	}
 
 	@Test
-	public void testSetIllegalSource() {
-	}
-
-	@Test
 	public void testSetNewDest() {
 		Graph<String> graph = emptyInstance();
 		graph.add("Alpha");
@@ -147,16 +142,13 @@ public abstract class GraphInstanceTest {
 	public void testSet() {
 		Graph<String> graph = emptyInstance();
 		graph.add("Alpha");
+		graph.set("Alpha", "Beta", 1);
 		assertEquals("New vertice added", 2, graph.vertices().size());
 	}
 
+	
 	@Test
 	public void testSourceIllegalTarget() {
-
-	}
-
-	@Test
-	public void testSourceZero() {
 		Graph<String> graph = emptyInstance();
 		graph.add("Alpha");
 		assertEquals("Empty map", Collections.EMPTY_MAP, graph.sources("Alpha"));
@@ -195,10 +187,6 @@ public abstract class GraphInstanceTest {
 		assertEquals("Empty map", Collections.EMPTY_MAP, graph.targets("Zeta"));
 	}
 
-	@Test
-	public void testTargetZero() {
-		
-	}
 
 	@Test
 	public void testTargetOne() {

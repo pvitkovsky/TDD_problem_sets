@@ -11,7 +11,7 @@ import java.util.Set;
 
 /**
  * An implementation of Graph.
- * 
+ * Edges know Vertices and the route of moving;
  * <p>PS2 instructions: you MUST use the provided rep.
  */
 public class ConcreteEdgesGraph implements Graph<String> {

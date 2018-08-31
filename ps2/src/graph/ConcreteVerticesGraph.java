@@ -4,14 +4,16 @@
 package graph;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 /**
  * An implementation of Graph.
+ * Vertices know about edges
  * 
- * <p>PS2 instructions: you MUST use the provided rep.
  */
 public class ConcreteVerticesGraph implements Graph<String> {
     
@@ -20,7 +22,7 @@ public class ConcreteVerticesGraph implements Graph<String> {
     // Abstraction function:
     //   TODO
     // Representation invariant:
-    //   TODO
+    //   vertices.count < ArrayList max;
     // Safety from rep exposure:
     //   TODO
     
@@ -29,19 +31,54 @@ public class ConcreteVerticesGraph implements Graph<String> {
     // TODO checkRep
     
     @Override public boolean add(String vertex) {
-        throw new RuntimeException("not implemented");
+    	return getVertex(vertex).exists();
     }
     
-    @Override public int set(String source, String target, int weight) {
-        throw new RuntimeException("not implemented");
+    private Vertex getVertex(String vertex) {
+    	for (Vertex vt : vertices){
+    		if (vt.name == vertex) return vt;
+    	}
+    	Vertex res = new Vertex(vertex); 
+    	if(vertices.add(res)) return res;
+    	else return new Vertex(); 
     }
+    
+    public int set(String source, String target, int weight) {
+    	Vertex vtSource = new Vertex();
+    	Vertex vtTarget = new Vertex();
+    	boolean sourceCreated = false;
+    	boolean targetCreated = false;
+    	for (Vertex thisVertex : vertices){
+    		sourceCreated = sourceCreated || vertexCreated(source, thisVertex, vtSource);
+    		targetCreated = targetCreated || vertexCreated(target, thisVertex, vtTarget);
+    	}
+    	if (sourceCreated && targetCreated) return vtSource.set(vtTarget, weight);
+    	if (sourceCreated){
+    		vtTarget = getVertex(target);
+    		return vtSource.set(vtTarget, weight);
+    	} else {
+    		throw new IllegalArgumentException("Source "+source+" Not exists");
+    	}
+    }
+
+	boolean vertexCreated(String source, Vertex vt, Vertex create) {
+		if (vt.name == source){
+			create = vt;
+			return true;
+		}
+		return false;
+	}
     
     @Override public boolean remove(String vertex) {
         throw new RuntimeException("not implemented");
     }
     
     @Override public Set<String> vertices() {
-        throw new RuntimeException("not implemented");
+    	Set<String> res = new HashSet<>();
+        for(Vertex vt : vertices){
+        	res.add(vt.name);
+        }
+        return res;
     }
     
     @Override public Map<String, Integer> sources(String target) {
@@ -67,20 +104,37 @@ public class ConcreteVerticesGraph implements Graph<String> {
 class Vertex {
     
     // TODO fields
-    
-    // Abstraction function:
-    //   TODO
+	String name;
+	boolean isEmpty;
+    Map<Vertex, Integer> edgesOut;
+	// Abstraction function:
+    //   edgesOut -> edges directed from this vertex to others
     // Representation invariant:
     //   TODO
     // Safety from rep exposure:
     //   TODO
     
     // TODO constructor
+    Vertex(String name){
+    	this.name = name;
+    	edgesOut = new HashMap<Vertex, Integer>();
+    	isEmpty = false;
+    }
+    
+    Vertex(){
+    	isEmpty = true;
+    }
+    
+    boolean exists(){
+    	return !isEmpty;
+    }
     
     // TODO checkRep
     
     // TODO methods
+    int set(Vertex target, Integer weight){
+    	return edgesOut.put(target, weight);
+    }
     
     // TODO toString()
-    
 }
