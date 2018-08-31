@@ -30,15 +30,28 @@ public class ConcreteVerticesGraph implements Graph<String> {
     // TODO constructor
     
     // TODO checkRep
+    private void checkRep(){
+    	for (Vertex vt : vertices){
+    		assertTrue(vt.initialized()); 
+    	}
+    }
     
-    @Override public boolean add(String name) {
+    /**
+     * Adds a graph with this name
+     */
+    @Override 
+    public boolean add(String name) {
     	Vertex vertex =  getVertex(name);
-    	if (vertex.exists()) return false;
-    	vertex.setName(name);
+    	if (vertex.initialized()) return false;
+    	vertex.initializeWithName(name);
     	if (vertices.add(vertex)) return true;
     	else throw new RuntimeException("Rep full");
      }
     
+    /**
+     * @param name vertex's name
+     * @return graph's vertex named name, if it exists; else returns empty vertex.
+     */
     private Vertex getVertex(String name) {
     	for (Vertex vt : vertices){
     		if (vt.name == name) return vt;
@@ -47,16 +60,19 @@ public class ConcreteVerticesGraph implements Graph<String> {
     	return res;
     }
     
-    ///rewrite, NPE, unclear
+    /**
+     * Sets an edge between the vertices
+     */
     public int set(String source, String target, int weight) {
+    	checkRep();
     	Vertex sourceToGet = getVertex(source);
     	Vertex targetToGet = getVertex(target);
-    	if (sourceToGet.exists() && targetToGet.exists()) return sourceToGet.set(targetToGet, weight);
-    	if (sourceToGet.exists() && !targetToGet.exists()){
+    	if (sourceToGet.initialized() && targetToGet.initialized()) return sourceToGet.set(targetToGet, weight);
+    	if (sourceToGet.initialized() && !targetToGet.initialized()){
     		add(target);
     		targetToGet = getVertex(target);
-    		assertTrue(sourceToGet.exists());
-    		assertTrue(targetToGet.exists());
+    		assertTrue(sourceToGet.initialized());
+    		assertTrue(targetToGet.initialized());
     		return sourceToGet.set(targetToGet, weight);
     	} else {
     		throw new IllegalArgumentException("Source "+source+" Not exists");
@@ -122,10 +138,10 @@ class Vertex {
     // TODO constructor
     Vertex(String name){
     	this();
-    	setName(name);
+    	initializeWithName(name);
     }
     
-    public void setName(String name2) {
+    public void initializeWithName(String name2) {
     	this.name = name2;
     	isEmpty = false;
 	}
@@ -138,7 +154,7 @@ class Vertex {
     	isEmpty = true;
     }
     
-    boolean exists(){
+    boolean initialized(){
     	return !isEmpty;
     }
     

@@ -3,10 +3,6 @@
  */
 package graph;
 
-import static org.junit.Assert.*;
-
-import org.junit.Test;
-
 /**
  * Tests for ConcreteVerticesGraph.
  * 
