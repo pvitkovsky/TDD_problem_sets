@@ -129,17 +129,18 @@ public abstract class GraphInstanceTest {
 	}
 
 	@Test
-	public void testSetNewDest() {
+	public void testSet() {
 		Graph<String> graph = emptyInstance();
 		graph.add("Alpha");
 		graph.add("Beta");
+		graph.set("Alpha", "Beta", Integer.valueOf(0));
 		for (int i = 0; i <= 8; i++) {
-			assertEquals("Graph.set returns previous weight", i, graph.set("Alpha", "Beta", i + 1));
+			assertEquals("Graph.set returns previous weight", i, graph.set("Alpha", "Beta", Integer.valueOf(i + 1)));
 		}
 	}
 
 	@Test
-	public void testSet() {
+	public void testSetNewDest() {
 		Graph<String> graph = emptyInstance();
 		graph.add("Alpha");
 		graph.set("Alpha", "Beta", 1);

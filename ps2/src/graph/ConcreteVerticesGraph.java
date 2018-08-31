@@ -9,7 +9,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
+import static org.junit.Assert.*;
 /**
  * An implementation of Graph.
  * Vertices know about edges
@@ -23,6 +23,7 @@ public class ConcreteVerticesGraph implements Graph<String> {
     //   TODO
     // Representation invariant:
     //   vertices.count < ArrayList max;
+    //	 all vertices in vertices are non-empty;
     // Safety from rep exposure:
     //   TODO
     
@@ -30,43 +31,46 @@ public class ConcreteVerticesGraph implements Graph<String> {
     
     // TODO checkRep
     
-    @Override public boolean add(String vertex) {
-    	return getVertex(vertex).exists();
-    }
+    @Override public boolean add(String name) {
+    	Vertex vertex =  getVertex(name);
+    	if (vertex.exists()) return false;
+    	vertex.setName(name);
+    	if (vertices.add(vertex)) return true;
+    	else throw new RuntimeException("Rep full");
+     }
     
-    private Vertex getVertex(String vertex) {
+    private Vertex getVertex(String name) {
     	for (Vertex vt : vertices){
-    		if (vt.name == vertex) return vt;
+    		if (vt.name == name) return vt;
     	}
-    	Vertex res = new Vertex(vertex); 
-    	if(vertices.add(res)) return res;
-    	else return new Vertex(); 
+    	Vertex res = new Vertex(); 
+    	return res;
     }
     
+    ///rewrite, NPE, unclear
     public int set(String source, String target, int weight) {
-    	Vertex vtSource = new Vertex();
-    	Vertex vtTarget = new Vertex();
-    	boolean sourceCreated = false;
-    	boolean targetCreated = false;
-    	for (Vertex thisVertex : vertices){
-    		sourceCreated = sourceCreated || vertexCreated(source, thisVertex, vtSource);
-    		targetCreated = targetCreated || vertexCreated(target, thisVertex, vtTarget);
-    	}
-    	if (sourceCreated && targetCreated) return vtSource.set(vtTarget, weight);
-    	if (sourceCreated){
-    		vtTarget = getVertex(target);
-    		return vtSource.set(vtTarget, weight);
+    	Vertex sourceToGet = getVertex(source);
+    	Vertex targetToGet = getVertex(target);
+    	if (sourceToGet.exists() && targetToGet.exists()) return sourceToGet.set(targetToGet, weight);
+    	if (sourceToGet.exists() && !targetToGet.exists()){
+    		add(target);
+    		targetToGet = getVertex(target);
+    		assertTrue(sourceToGet.exists());
+    		assertTrue(targetToGet.exists());
+    		return sourceToGet.set(targetToGet, weight);
     	} else {
     		throw new IllegalArgumentException("Source "+source+" Not exists");
     	}
     }
 
-	boolean vertexCreated(String source, Vertex vt, Vertex create) {
-		if (vt.name == source){
-			create = vt;
-			return true;
-		}
-		return false;
+    /**
+     * 
+     * @param source
+     * @param thisVertex
+     * @return
+     */
+	boolean vertexCreated(String source, Vertex thisVertex) {
+		return  (thisVertex.name == source) ? true : false;
 	}
     
     @Override public boolean remove(String vertex) {
@@ -107,6 +111,7 @@ class Vertex {
 	String name;
 	boolean isEmpty;
     Map<Vertex, Integer> edgesOut;
+  
 	// Abstraction function:
     //   edgesOut -> edges directed from this vertex to others
     // Representation invariant:
@@ -116,12 +121,20 @@ class Vertex {
     
     // TODO constructor
     Vertex(String name){
-    	this.name = name;
-    	edgesOut = new HashMap<Vertex, Integer>();
-    	isEmpty = false;
+    	this();
+    	setName(name);
     }
     
-    Vertex(){
+    public void setName(String name2) {
+    	this.name = name2;
+    	isEmpty = false;
+	}
+    
+    /**
+     * Empty constructor creates empty vertex;
+     */
+	Vertex(){
+		edgesOut = new HashMap<Vertex, Integer>();
     	isEmpty = true;
     }
     
@@ -133,8 +146,14 @@ class Vertex {
     
     // TODO methods
     int set(Vertex target, Integer weight){
-    	return edgesOut.put(target, weight);
+    	if (edgesOut.isEmpty()) {
+    		edgesOut.put(target, weight.intValue());
+    		return 0;
+    	}
+    	return edgesOut.put(target, weight.intValue());
     }
     
-    // TODO toString()
+    public String toString(){
+    	return "Vertex "+name+" has "+edgesOut.size()+" Edges";
+    }
 }
