@@ -28,7 +28,7 @@ public class TestDataGenerator {
 	public static Map<String, Integer> getStringIntMap() {
 		Map<String, Integer> res = new HashMap<>();
 		for (String str : GENSTRINGS) {
-			res.put(str, gen.nextInt());
+			res.put(str, getRandomNumberNotZero());
 		}
 		return res;
 	}
@@ -39,5 +39,13 @@ public class TestDataGenerator {
 
 	public static int getRandomNumber() {
 		return gen.nextInt();
+	}
+	
+	public static int getRandomNumberNotZero() {
+		int rand = getRandomNumber();
+		while(rand == 0) {
+			rand = getRandomNumber();
+		}
+		return rand;
 	}
 }

@@ -161,7 +161,7 @@ public abstract class GraphInstanceTest {
 		String firstVertex = "Alpha";
 		String secondVertex = "Beta";
 		int weightFirstToSecond = 1;
-		resMap.put(secondVertex, weightFirstToSecond);
+		resMap.put(firstVertex, weightFirstToSecond);
 		Graph<String> graph = emptyInstance();
 		graph.add(firstVertex);
 		graph.set(firstVertex, secondVertex, weightFirstToSecond);
@@ -176,6 +176,7 @@ public abstract class GraphInstanceTest {
 		String oneTarget = "Zeta";
 		graph.add(oneTarget);
 		for(String str : sources) {
+			System.out.println(oneTarget+" "+str+" "+resMap.get(str));
 			graph.set(str, oneTarget, resMap.get(str));
 		}
 		assertEquals("Many sources", resMap, graph.sources(oneTarget));
