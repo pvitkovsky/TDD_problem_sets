@@ -10,10 +10,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import javax.xml.transform.Source;
-
-import org.junit.runner.manipulation.Sortable;
-
 import java.util.Set;
 import static org.junit.Assert.*;
 
@@ -28,8 +24,8 @@ public class ConcreteVerticesGraph implements Graph<String> {
 	// Abstraction function:
 	// TODO
 	// Representation invariant:
-	// vertices.count < ArrayList max;
-	// all vertices in vertices are non-empty;
+	//     vertices.count < ArrayList max;
+	//     all vertices in vertices are non-empty;
 	// Safety from rep exposure:
 	// TODO
 
@@ -66,7 +62,7 @@ public class ConcreteVerticesGraph implements Graph<String> {
 	 */
 	private Vertex getVertexMaybe(String name) {
 		for (Vertex vt : vertices) {
-			if (vt.name == name)
+			if (vt.getName() == name)
 				return vt;
 		}
 		return new Vertex();
@@ -74,10 +70,19 @@ public class ConcreteVerticesGraph implements Graph<String> {
 
 	/**
 	 * @param name
+	 * @return true if name is a vertex in this graph
+	 */
+	private boolean exists(String name) {
+		return getVertexMaybe(name).initialized();
+	}
+	
+	/**
+	 * 
+	 * @param name
 	 * @return vertex with the name specified only if it exists
 	 */
 	private Vertex getVertexOnlyIfExists(String name) {
-		if (notExists(name))
+		if (!exists(name))
 			throw new IllegalArgumentException("Vertex " + name + " not created");
 		return getVertexMaybe(name);
 	}
@@ -87,19 +92,13 @@ public class ConcreteVerticesGraph implements Graph<String> {
 	 * @return vertex with the name specified 
 	 */
 	private Vertex getVertexAnyway(String name) {
-		if (notExists(name)) {
+		if (!exists(name)) {
 			add(name);
 		}
 		return getVertexMaybe(name);
 	}
 
-	/**
-	 * @param name
-	 * @return true if name is not a vertex in this graph
-	 */
-	private boolean notExists(String name) {
-		return !getVertexMaybe(name).initialized();
-	}
+	
 
 	/**
 	 * Sets an edge between the vertices
@@ -112,15 +111,18 @@ public class ConcreteVerticesGraph implements Graph<String> {
 	}
 
 	@Override
-	public boolean remove(String vertex) {
-		throw new RuntimeException("not implemented");
+	public boolean remove(String name) {
+		Vertex vertex = getVertexMaybe(name);
+		if (vertex.initialized()) 
+			return vertices.remove(vertex);
+		else return false;
 	}
 
 	@Override
 	public Set<String> vertices() {
 		Set<String> res = new HashSet<>();
 		for (Vertex vt : vertices) {
-			res.add(vt.name);
+			res.add(vt.getName());
 		}
 		return res;
 	}
@@ -131,7 +133,7 @@ public class ConcreteVerticesGraph implements Graph<String> {
 		for (Vertex vt : vertices) {
 			int weightToTarget = vt.weight(target);
 			if (weightToTarget != 0)
-				res.put(vt.name, weightToTarget);
+				res.put(vt.getName(), weightToTarget);
 		}
 		return res;
 	}
@@ -140,8 +142,8 @@ public class ConcreteVerticesGraph implements Graph<String> {
 	public Map<String, Integer> targets(String source) {
 		Vertex vt = getVertexOnlyIfExists(source);
 		Map<String, Integer> res = new HashMap<>();
-		for (Entry<Vertex, Integer> e : vt.edgesOut.entrySet()) {
-			res.put(e.getKey().name, e.getValue());
+		for (Entry<Vertex, Integer> e : vt.getEdgesOut().entrySet()) {
+			res.put(e.getKey().getName(), e.getValue());
 		}
 		return res;
 	}
@@ -154,47 +156,69 @@ public class ConcreteVerticesGraph implements Graph<String> {
  * TODO specification Mutable. This class is internal to the rep of
  * ConcreteVerticesGraph.
  * 
- * <p>
- * PS2 instructions: the specification and implementation of this class is up to
- * you.
  */
 class Vertex {
 
-	// TODO fields
-	String name;
+	private String name;
+	private Map<Vertex, Integer> edgesOut;
 	boolean isEmpty;
-	Map<Vertex, Integer> edgesOut;
-
+	
 	// Abstraction function:
-	// edgesOut -> edges directed from this vertex to others
+	//     isEmpty -> vertex exists or no;
+	//     name, edgesOut -> edges directed from this vertex to others
 	// Representation invariant:
-	// TODO
+	//     If isEmpty, name is null, and vice versa; edgesOut not null;
 	// Safety from rep exposure:
-	// TODO //is it ok to expose rep of inner class to the host class?
+	//     isEmpty is not exposed; name, edgesOut are mutable; edgesOut is hidden with Map interface
 
 	/**
 	 * Empty constructor creates empty vertex;
 	 */
 	Vertex() {
-		edgesOut = new HashMap<Vertex, Integer>();
+		setEdgesOut(new HashMap<Vertex, Integer>());
 		isEmpty = true;
 	}
 
-	void initializeWithName(String name) {
-		this.name = name;
-		isEmpty = false;
-	}
-
+	/**
+	 * Constructor that creates initialized vertex
+	 * @param name
+	 */
 	Vertex(String name) {
 		this();
 		initializeWithName(name);
 	}
-
+	
+	void initializeWithName(String name) {
+		this.setName(name);
+		isEmpty = false;	
+	}
+	
 	boolean initialized() {
 		return !isEmpty;
 	}
 
-	// TODO checkRep
+	boolean checkRep() {
+		if (isEmpty && name!=null) return false;
+		if (!isEmpty && name == null) return false;
+		if (edgesOut  == null) return false;
+		return true;
+	}
+	
+	String getName() {
+		return name;
+	}
+
+	void setName(String name) {
+		this.name = name;
+	}
+	
+	Map<Vertex, Integer> getEdgesOut() {
+		return edgesOut;
+	}
+
+	void setEdgesOut(Map<Vertex, Integer> edgesOut) {
+		this.edgesOut = edgesOut;
+	}
 
 	/**
 	 * 
@@ -203,23 +227,28 @@ class Vertex {
 	 * @return weight from this to that vertex
 	 */
 	int weight(String target) {
-		for (Vertex vt : edgesOut.keySet()) {
-			if (vt.name == target) {
-				return edgesOut.get(vt);
+		for (Vertex vt : getEdgesOut().keySet()) {
+			if (vt.getName() == target) {
+				return getEdgesOut().get(vt);
 			}
 		}
 		return 0;
 	}
 
+	/**
+	 * @param target
+	 * @param weight
+	 * @return
+	 */
 	int set(Vertex target, Integer weight) {
-		if (!edgesOut.keySet().contains(target)) {
-			edgesOut.put(target, weight.intValue());
+		if (!getEdgesOut().keySet().contains(target)) {
+			getEdgesOut().put(target, weight.intValue());
 			return 0;
 		}
-		return edgesOut.put(target, weight.intValue());
+		return getEdgesOut().put(target, weight.intValue());
 	}
 
 	public String toString() {
-		return "Vertex " + name + " has " + edgesOut.size() + " Edges";
+		return "Vertex " + getName() + " has " + getEdgesOut().size() + " Edges";
 	}
 }
